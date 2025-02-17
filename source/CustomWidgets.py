@@ -256,7 +256,7 @@ class ComboLabel:
 class MultiEntryLabel:
     # defines label with a given number of numerical entries
     # useful for when the modified parameter is an iterable
-    # Has 4 methods that can be called: get(), set(), hide().
+    # Has 4 methods that can be called: get(), set(), hide(), show().
     # When the widget is interacted with, it will call the method passed into the command argument, and pass the widget itself as a parameter.
     # Must be placed in grid
     def __init__(self, master, text: str, row: int, from_: int|float, to: int|float, num_entries: int, default_values: Iterable=None, key: str=None, widget_dictionary: dict=None, global_sync: bool=True, is_float=False, increment: int|float=1, width=20, command: Callable=lambda x:None):
