@@ -3,7 +3,8 @@ import cv2
 import numpy as np
 from PIL import Image
 import matplotlib.colors
-import os 
+import os
+import piexif
 
 import logging
 

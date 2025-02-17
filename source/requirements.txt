@@ -6,3 +6,4 @@ opencv_python_headless==4.10.0.84
 Pillow==11.1.0
 psutil==6.1.1
 rawpy==0.24.0
+piexif==1.1.3
