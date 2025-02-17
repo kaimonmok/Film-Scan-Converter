@@ -4,7 +4,6 @@ import sys
 from tkinter import ttk,  filedialog, messagebox, colorchooser
 import tkinter as tk
 from PIL import ImageTk
-import rawpy
 import threading
 import numpy as np 
 import cv2
