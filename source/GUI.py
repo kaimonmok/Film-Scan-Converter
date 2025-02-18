@@ -11,7 +11,7 @@ import multiprocessing
 from typing import Literal
 
 #custom classes
-from CustomWidgets import ScrollFrame, ScaleEntry, CheckLabel, ComboLabel, MultiEntryLabel
+from CustomWidgets import ScrollFrame, ScaleEntry, CheckLabel, ComboLabel, EntryLabel, MultiEntryLabel
 from RawProcessing import RawProcessing
 
 #logging
@@ -91,6 +91,7 @@ class GUI:
         self.editmenu.add_command(label='Reset to Default Settings', command=self.reset_settings)
         self.editmenu.add_separator()
         self.editmenu.add_command(label='Advanced Settings...', command=self.advanced_dialog)
+        self.editmenu.add_command(label='Add EXIF data', command=self.add_exifdata)
         menubar.add_cascade(label='Edit', menu=self.editmenu)
         self.master.config(menu=menubar)
 
@@ -444,6 +445,67 @@ class GUI:
         ttk.Button(buttonFrame, text='Cancel', command=quit).pack(side=tk.RIGHT, padx=2, pady=5, anchor='sw')
         ttk.Button(buttonFrame, text='Save', command=save_settings).pack(side=tk.RIGHT, padx=2, pady=5, anchor='sw')
         ttk.Button(buttonFrame, text='Reset to Default', command=reset, width=17).pack(side=tk.RIGHT, padx=2, pady=5, anchor='sw')
+
+        # Centres pop-up window over self.master window
+        top.update_idletasks()
+        x = self.master.winfo_x() + int((self.master.winfo_width()/2) - (top.winfo_width()/2))
+        y = self.master.winfo_y() + int((self.master.winfo_height()/2) - (top.winfo_height()/2))
+        top.geometry('+%d+%d' % (x, y))
+
+    def add_exifdata(self):
+        def save_settings():
+            # applies the values stored in the widgets to raw processing
+            for widget in widget_dict.values():
+                if widget.key in RawProcessing.exif_parameters:
+                    RawProcessing.exif_parameters[widget.key] = widget.get()
+            
+            quit()
+            
+
+        def quit():
+            self.master.attributes('-topmost', 0)
+            top.destroy()
+
+        top = tk.Toplevel(self.master)
+        top.transient(self.master)
+        top.title('Add EXIF data')
+        top.grab_set()
+        top.bind('<Button>', lambda event: event.widget.focus_set())
+        top.resizable(False, False)
+        top.focus_set()
+        top.protocol('WM_DELETE_WINDOW', quit)
+
+        mainFrame = ttk.Frame(top, padding=10)
+        mainFrame.pack(fill='x')
+
+        firstColumn = ttk.Frame(mainFrame, padding=2)
+        firstColumn.grid(row=0, column=0, sticky='n')
+
+        widget_dict = {}
+        
+        label_camera_information = ttk.Label(top, text='Camera Information', font=self.header_style, padding=2)
+        labelframe_camera_information = ttk.LabelFrame(firstColumn, borderwidth=2, labelwidget=label_camera_information, padding=5)
+        labelframe_camera_information.pack(fill='x', expand=True)
+
+        EntryLabel(labelframe_camera_information, 'Camera make', 0, 'camera_make', widget_dict)
+        EntryLabel(labelframe_camera_information, 'Camera model', 1, 'camera_model', widget_dict)
+
+        label_lens_information = ttk.Label(top, text='Lens Information', font=self.header_style, padding=2)
+        labelframe_lens_information = ttk.LabelFrame(firstColumn, borderwidth=2, labelwidget=label_lens_information, padding=5)
+        labelframe_lens_information.pack(fill='x', expand=True)
+
+        EntryLabel(labelframe_lens_information, 'Lens make', 0, 'lens_make', widget_dict)
+        EntryLabel(labelframe_lens_information, 'Lens model', 1, 'lens_model', widget_dict)
+
+        label_datetime_information = ttk.Label(top, text='Date and Time', font=self.header_style, padding=2)
+        labelframe_datetime_information = ttk.LabelFrame(firstColumn, borderwidth=2, labelwidget=label_datetime_information, padding=5)
+        labelframe_datetime_information.pack(fill='x', expand=True)
+
+        EntryLabel(labelframe_datetime_information, 'Date Time Original', 0, 'date_time_original', widget_dict, 'YYYY:MM:DD hh:mm:ss')
+
+        buttonFrame = ttk.Frame(mainFrame)
+        buttonFrame.grid(row=1, column=0, columnspan=2, sticky='e')
+        ttk.Button(buttonFrame, text='Save', command=save_settings).pack(side=tk.LEFT, padx=2, pady=5, anchor='sw')
 
         # Centres pop-up window over self.master window
         top.update_idletasks()
