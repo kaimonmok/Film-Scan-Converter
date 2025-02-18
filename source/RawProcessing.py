@@ -246,8 +246,11 @@ class RawProcessing:
         filename = f"{filename}.{self.class_parameters['filetype']}"
         match self.class_parameters['filetype']:
             case 'JPG':
-                quality = [cv2.IMWRITE_JPEG_QUALITY, self.class_parameters['jpg_quality']]
-                cv2.imwrite(filename, cv2.convertScaleAbs(img, alpha=(255.0/65535.0)), quality) # Must convert to 8-bit image before exporting as JPG
+                img_8bit = cv2.convertScaleAbs(img, alpha=(255.0/65535.0)) # Must convert to 8-bit image before exporting as JPG
+                img_pil = Image.fromarray(cv2.cvtColor(img_8bit, cv2.COLOR_RGB2BGR))
+                exif = self.get_exif_bytes()
+
+                img_pil.save(filename, format='JPEG', quality=self.class_parameters['jpg_quality'], exif=exif)
             case 'TIFF':
                 quality = [cv2.IMWRITE_TIFF_COMPRESSION, self.class_parameters['tiff_compression']]
                 cv2.imwrite(filename, img, quality)
