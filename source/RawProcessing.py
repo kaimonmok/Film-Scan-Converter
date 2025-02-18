@@ -3,7 +3,8 @@ import cv2
 import numpy as np
 from PIL import Image
 import matplotlib.colors
-import os 
+import os
+import piexif
 
 import logging
 
@@ -44,6 +45,14 @@ class RawProcessing:
     advanced_attrs = [key for key in default_parameters.keys() if key not in ('filetype', 'frame', 'fit_aspect_ratio')] # list of keys for advanced settings, except for keys that should not be saved
     processing_parameters = ('dark_threshold','light_threshold','border_crop','flip','rotation','film_type','white_point','black_point','gamma','shadows','highlights','temp','tint','sat','reject','base_detect','base_rgb','remove_dust')
     
+    exif_parameters = dict(
+        camera_make = '',
+        camera_model = '',
+        lens_make = '',
+        lens_model = '',
+        date_time_original = ''
+    )
+
     def __init__(self, file_directory, default_settings, global_settings, config_path):
         # file_directory: the name of the RAW file to be processed
         # Instance Variables
@@ -197,6 +206,37 @@ class RawProcessing:
         # returns file name when str() is called on photo
         return os.path.basename(self.file_directory)
     
+    def get_exif_bytes(self):
+        # Builds a valid exif data structure based on the exif parameters and the given image as bytes
+        # Returns bytes containing the exif data structure for images
+        zeroth_ifd = {
+            piexif.ImageIFD.Make: self.exif_parameters['camera_make'],
+            piexif.ImageIFD.Model: self.exif_parameters['camera_model'],
+            piexif.ImageIFD.Software: "Film Scan Converter"
+        }
+        exif_ifd = {
+            piexif.ExifIFD.DateTimeOriginal: self.exif_parameters['date_time_original'],
+            piexif.ExifIFD.LensMake: self.exif_parameters['lens_make'],
+            piexif.ExifIFD.LensModel: self.exif_parameters['lens_model'],
+        }
+        gps_ifd = {
+            # placeholder for further development
+        }
+        first_ifd = {
+            # placeholder for further development
+        }
+
+        # piexif expects this dict structure
+        exif_dict = {
+            '0th':zeroth_ifd,
+            'Exif':exif_ifd,
+            'GPS':gps_ifd,
+            '1st':first_ifd,
+            'thumbnail': None
+        }
+
+        return piexif.dump(exif_dict)
+
     def export(self, filename):
         # Saves final image to disk.
         # filename is a string containing the directory and file name with the file extension
@@ -206,8 +246,11 @@ class RawProcessing:
         filename = f"{filename}.{self.class_parameters['filetype']}"
         match self.class_parameters['filetype']:
             case 'JPG':
-                quality = [cv2.IMWRITE_JPEG_QUALITY, self.class_parameters['jpg_quality']]
-                cv2.imwrite(filename, cv2.convertScaleAbs(img, alpha=(255.0/65535.0)), quality) # Must convert to 8-bit image before exporting as JPG
+                img_8bit = cv2.convertScaleAbs(img, alpha=(255.0/65535.0)) # Must convert to 8-bit image before exporting as JPG
+                img_pil = Image.fromarray(cv2.cvtColor(img_8bit, cv2.COLOR_RGB2BGR))
+                exif = self.get_exif_bytes()
+
+                img_pil.save(filename, format='JPEG', quality=self.class_parameters['jpg_quality'], exif=exif)
             case 'TIFF':
                 quality = [cv2.IMWRITE_TIFF_COMPRESSION, self.class_parameters['tiff_compression']]
                 cv2.imwrite(filename, img, quality)
