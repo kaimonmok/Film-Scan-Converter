@@ -87,7 +87,10 @@ class RawProcessing:
                     setattr(self, attr, 0) # otherwise set to 0
 
             self.use_global_settings = False # tells GUI class whether to overwrite current photo settings with global setting
-    
+
+        # read original exif data from source image
+        self.exif_data = piexif.load(self.file_directory)
+
     def load(self, full_res=False):
         # Loads the RAW file into memory
         try:
@@ -207,33 +210,27 @@ class RawProcessing:
         return os.path.basename(self.file_directory)
     
     def get_exif_bytes(self):
-        # Builds a valid exif data structure based on the exif parameters and the given image as bytes
-        # Returns bytes containing the exif data structure for images
-        zeroth_ifd = {
-            piexif.ImageIFD.Make: self.exif_parameters['camera_make'],
-            piexif.ImageIFD.Model: self.exif_parameters['camera_model'],
-            piexif.ImageIFD.Software: "Film Scan Converter"
-        }
-        exif_ifd = {
-            piexif.ExifIFD.DateTimeOriginal: self.exif_parameters['date_time_original'],
-            piexif.ExifIFD.LensMake: self.exif_parameters['lens_make'],
-            piexif.ExifIFD.LensModel: self.exif_parameters['lens_model'],
-        }
-        gps_ifd = {
-            # placeholder for further development
-        }
-        first_ifd = {
-            # placeholder for further development
-        }
+        # Builds a valid exif data structure based on the exif parameters from the global settings and the current image exif data
+        # If no exif information for a particular field is overwritten with a global setting, the original exif data is used
+        # Returns bytes containing the exif data structure for the image
 
-        # piexif expects this dict structure
-        exif_dict = {
-            '0th':zeroth_ifd,
-            'Exif':exif_ifd,
-            'GPS':gps_ifd,
-            '1st':first_ifd,
-            'thumbnail': None
-        }
+        exif_dict = self.exif_data
+        exif_dict['0th'][piexif.ImageIFD.Software] = 'Film Scan Converter'
+
+        if self.exif_parameters['camera_make']:
+            exif_dict['0th'][piexif.ImageIFD.Make] = self.exif_parameters['camera_make']
+
+        if self.exif_parameters['camera_model']:
+            exif_dict['0th'][piexif.ImageIFD.Model] = self.exif_parameters['camera_model']
+
+        if self.exif_parameters['date_time_original']:
+            exif_dict['Exif'][piexif.ExifIFD.DateTimeOriginal] = self.exif_parameters['date_time_original']
+
+        if self.exif_parameters['lens_make']:
+            exif_dict['Exif'][piexif.ExifIFD.LensMake] = self.exif_parameters['lens_make']
+
+        if self.exif_parameters['lens_model']:
+            exif_dict['Exif'][piexif.ExifIFD.LensModel] = self.exif_parameters['lens_model']
 
         return piexif.dump(exif_dict)
 
