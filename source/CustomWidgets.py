@@ -253,10 +253,46 @@ class ComboLabel:
         self.label.grid(row=self.row, column=0, sticky=tk.E)
         self.combobox.grid(row=self.row, column=1, sticky=tk.W, padx=2, columnspan=2)
 
+class EntryLabel:
+    # defines a label with an entry text box
+    # useful for when information should be entered as a text value
+    # Has 4 methods that can be called: get(), set(), hide(), show().
+    # Must be placed in grid
+    def __init__(self, master, text: str, row: int, key: str=None, widget_dictionary: dict=None, placeholder: str=None):
+        self.row = row
+        self.key = key
+        if widget_dictionary is not None and key is not None:
+            widget_dictionary[self.key] = self # adding widget to provided dictionary
+
+        self.value = tk.StringVar(master)
+
+        self.label = ttk.Label(master, text=text)
+        self.entry_make = tk.Entry(master, textvariable=self.value, placeholder=placeholder)
+
+        self.show()
+
+    def get(self):
+        # Returns the text stored in the entry text box
+        return self.value.get()
+
+    def set(self, value: str):
+        # Updates widgets to given value
+        self.value.set(value)
+
+    def hide(self):
+        # Hides the widget
+        self.label.grid_forget()
+        self.entry_frame.grid_forget()
+
+    def show(self):
+        # Shows the widget
+        self.label.grid(row=self.row, column=0, sticky=tk.E)
+        self.entry_make.grid(row=self.row, column=1, sticky='new', padx=2, pady=2)
+
 class MultiEntryLabel:
     # defines label with a given number of numerical entries
     # useful for when the modified parameter is an iterable
-    # Has 4 methods that can be called: get(), set(), hide().
+    # Has 4 methods that can be called: get(), set(), hide(), show().
     # When the widget is interacted with, it will call the method passed into the command argument, and pass the widget itself as a parameter.
     # Must be placed in grid
     def __init__(self, master, text: str, row: int, from_: int|float, to: int|float, num_entries: int, default_values: Iterable=None, key: str=None, widget_dictionary: dict=None, global_sync: bool=True, is_float=False, increment: int|float=1, width=20, command: Callable=lambda x:None):
