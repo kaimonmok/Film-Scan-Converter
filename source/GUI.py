@@ -524,12 +524,13 @@ class GUI:
             self.global_settings[key] = value
             self.changed_global_settings()
         self.update_UI()
-        if len(self.photos) == 0:
-            return
         if instance:
-            setattr(self.current_photo, key, value) # change instance
+            if hasattr(self, 'current_photo'):
+                setattr(self.current_photo, key, value) # change instance
         else:
             RawProcessing.class_parameters[key] = value
+        if len(self.photos) == 0:
+            return
         match mode:
             case 'normal':
                 self.current_photo.process()
@@ -939,7 +940,7 @@ class GUI:
             affected = sum([photo.use_global_settings for photo in self.photos])
             if affected > 1:
                 if messagebox.askyesno('Base Colour Changed', f'Do you want change the base colour globally to {str(affected)} photos?', default='no'):
-                    self.global_settings['base_detect'] = self.base.current()
+                    self.global_settings['base_detect'] = self.base_mode.get()
                     self.changed_global_settings()
                 else:
                     self.glob_check.set(False)
@@ -1082,7 +1083,7 @@ class GUI:
                     continue
                 if photo.use_global_settings:
                     self.apply_settings(photo, self.global_settings) # Ensures the proper settings have been applied
-                filename = os.path.join(self.destination_folder, str(self.current_photo).split('.')[0]) # removes the file extension
+                filename = os.path.join(self.destination_folder, str(photo).split('.')[0]) # removes the file extension
                 inputs.append((photo, filename, self.terminate, RawProcessing.class_parameters))
                 if hasattr(photo, 'memory_alloc'):
                     allocated += photo.memory_alloc # tally of estimated memory requirements of each photo
