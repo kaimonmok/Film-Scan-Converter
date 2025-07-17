@@ -9,7 +9,7 @@ For installing Film-Scan-Converter please check the [installation](docs/installa
 
 ## Documentation
 
-The documentation is located in the [/docs](docs/inxex.md) directory and also available on [Documentation Website](https://www.example.com).
+The documentation is located in the [/docs](docs/index.md) directory and also available on [Documentation Website](https://www.example.com).
 
 Quick Links:
 
