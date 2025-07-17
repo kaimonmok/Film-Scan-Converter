@@ -17,7 +17,7 @@ nav:
   - Developer Guide:
       - Overview: development/index.md
       - Building: development/building.md
-      - Contributing: development/contributing.md
+      - Contributing: contributing.md
 
 
 markdown_extensions:
