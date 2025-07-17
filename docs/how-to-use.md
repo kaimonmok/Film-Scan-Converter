@@ -19,7 +19,7 @@ A potential workflow is as follows:
 ## Automatic Cropping
 
 By setting the appropriate dark and light threshold values, the application can automatically find the optimal crop around a photo, even if it is off-center or misaligned. The dark and light threshold values define the minimum and maximum brightness levels of the region of the RAW scan to highlight for retention. An appropriately thresholded image highlights most if not the entirety of the desired image, and excludes the mask and/or the film base. In the "Threshold" view, it should look like a white box surrounded by a black border, as shown below:  
-![image](./images/4a768370-e47c-48a8-b76f-8cd934c5d92.png)
+![image](./images/4a768370-e47c-48a8-b76f-8cd934c5d924.png)
 
 You can verify that the application has detected the photo properly using the "Contours" view. The final crop of the photo is shown as a green rectangle, as shown below.  
 ![image](./images/fd3e44ec-31f6-4054-8ad6-28ee4ad2ae37.png)
