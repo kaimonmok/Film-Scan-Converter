@@ -16,7 +16,7 @@ Quick Links:
 - [Installation](docs/installation.md)
 - [How to Use](docs/how-to-use.md)
 
-Developer documentation and contribution guidelines are available in the [docs/developer-guide.md](docs/developer-guide.md) file.
+Developer documentation and contribution guidelines are available in the [docs/developer-guide.md](docs/development/index.md) file.
 
 ## Contributing
 
