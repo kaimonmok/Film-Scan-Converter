@@ -1,0 +1,30 @@
+site_name: Film-Scan-Converter
+site_url: https://github.com/kaimonmok/Film-Scan-Converter/fork
+theme:
+  name: material
+  features:
+    - navigation.instant
+exclude:
+  - images/
+
+
+nav:
+  - Home: index.md
+  - Installation: installation.md
+  - How to Use: how-to-use.md
+  - Best Practices: best-practices.md
+  - Features: features.md
+  - Developer Guide:
+      - Overview: development/index.md
+      - Building: development/building.md
+      - Contributing: contributing.md
+
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
