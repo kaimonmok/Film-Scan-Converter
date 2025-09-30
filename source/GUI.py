@@ -916,7 +916,7 @@ class GUI:
                 except Exception as e: 
                     logger.exception(f'Exception: {e}')
                     return
-                blank = RawProcessing(filename, self.default_settings, self.global_settings)
+                blank = RawProcessing(filename, self.default_settings, self.global_settings, self.config_path)
                 blank.load()
                 if blank.FileReadError:
                     messagebox.showerror('Read Blank', 'RAW image could not be read. Verify the integrity of the RAW image.')
