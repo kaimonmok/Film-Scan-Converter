@@ -46,8 +46,10 @@ If no binary exists for your platform yet, please use the manual installation.
 
     ```bash
     python -m venv venv
-    # On macOS/Linux:
+    # On macOS/Linux (bash):
     source venv/bin/activate
+    # On Linux (fish):
+    source vent/bin/activate.fish
     # On Windows:
     venv\Scripts\activate
     ```
@@ -78,6 +80,12 @@ The application requires `tkinter` for the GUI. On some platforms this may not i
 
     ```bash
     sudo apt-get install python3-tk
+    ```
+
+- On **Linux** (Arch):
+
+    ```bash
+    sudo pacman -S tk
     ```
 
 - On **Windows**, `tkinter` is usually included with the standard Python installer. If you encounter issues, ensure you installed Python from [python.org](https://www.python.org/downloads/).
